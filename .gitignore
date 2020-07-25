@@ -1,0 +1,24 @@
+config/db.php
+config/params-local.php
+config/web-local.php
+config/apiclient_cert.pem
+config/apiclient_key.pem
+
+
+# ------------------------------
+# Composer
+vendor
+composer.lock
+
+local.php
+# ------------------------------
+# Others
+.DS_Store
+# ------------------------------
+# PHPSTORM
+.idea
+
+web/uploads
+_ide_helper.php
+
+prod/
