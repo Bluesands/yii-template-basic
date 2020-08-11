@@ -5,6 +5,7 @@ namespace app\services;
 class Service
 {
     public $err = '';
+    public $baseModel;
 
     /**
      * @var ModelFactory 模型工厂实例

@@ -1,12 +1,13 @@
 <?php
 namespace app\models\common;
 
+use app\enums\Enum;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 
 /**
- * Class BaseActiveRecord
+ * 基础AR类 BaseActiveRecord
  * @property int    $id
  * @property int    $status
  * @property string $add_time
@@ -14,22 +15,19 @@ use yii\db\ActiveRecord;
  */
 class BaseActiveRecord extends ActiveRecord
 {
-    const STATUS_DELETED = -1;
-    const STATUS_INVALID = 0;
-    const STATUS_NORMAL = 1;
-    const STATUS_VERIFYING = 9;
-
-    const STATUS_TEXT = [
-        self::STATUS_DELETED   => '删除',
-        self::STATUS_INVALID   => '无效',
-        self::STATUS_NORMAL    => '正常',
-        self::STATUS_VERIFYING => '待审核',
-    ];
 
     /**
      * @var string
      */
     public $err = '';
+
+    /*
+     * 基础rules
+     */
+    public function rules()
+    {
+        return [];
+    }
 
     /**
      * $model->load() 不需要传第二个参数
@@ -55,7 +53,7 @@ class BaseActiveRecord extends ActiveRecord
             // 新增记录
             $this->add_time    = $this->add_time ?? DATETIME;
             $this->update_time = $this->update_time ?? DATETIME;
-            $this->status      = $this->status ?? self::STATUS_NORMAL;
+            $this->status      = $this->status ?? Enum::STATUS_NORMAL;
         } else {
             // 更新记录
             $this->update_time = DATETIME;
@@ -124,7 +122,7 @@ class BaseActiveRecord extends ActiveRecord
     public function findList(array $fields = null, array $where = null, array $order = null, int $page = 15)
     {
         $fields = is_null($fields) ? '*' : $fields;
-        $where  = is_null($where) ? ['status' => self::STATUS_NORMAL] : $where;
+        $where  = is_null($where) ? ['status' => Enum::STATUS_NORMAL] : $where;
         $order  = is_null($order) ? ['id' => SORT_DESC] : $order;
 
         return $this->find()
@@ -143,7 +141,7 @@ class BaseActiveRecord extends ActiveRecord
     public function findAllList(array $fields = null, array $where = null, array $order = null)
     {
         $fields = is_null($fields) ? '*' : $fields;
-        $where  = is_null($where) ? ['status' => self::STATUS_NORMAL] : $where;
+        $where  = is_null($where) ? ['status' => Enum::STATUS_NORMAL] : $where;
         $order  = is_null($order) ? ['id' => SORT_DESC] : $order;
 
         return $this->find()
@@ -172,7 +170,7 @@ class BaseActiveRecord extends ActiveRecord
     public function deleteById(int $id)
     {
         $model         = self::findOne($id);
-        $model->status = self::STATUS_DELETED;
+        $model->status = Enum::STATUS_NORMAL;
 
         return $model->save();
     }
@@ -217,7 +215,7 @@ class BaseActiveRecord extends ActiveRecord
         array $order = null
     ) {
         $fields = is_null($fields) ? '*' : $fields;
-        $where  = is_null($where) ? ['status' => self::STATUS_NORMAL] : $where;
+        $where  = is_null($where) ? ['status' => Enum::STATUS_NORMAL] : $where;
         $order  = is_null($order) ? ['id' => SORT_DESC] : $order;
 
         if (is_null($searchFields) || empty($keyword)) {

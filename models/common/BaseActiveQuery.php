@@ -20,7 +20,34 @@ class BaseActiveQuery extends ActiveQuery
             }
         }
 
-        parent::where($condition, $params);
+        $this->andWhere($condition, $params);
+
+        return $this;
+    }
+
+    /**
+     * 优化in查询
+     * @param string $name
+     * @param array  $value
+     * @return BaseActiveQuery
+     */
+    public function andFilterIn(string $name, array $value)
+    {
+        $count = count($value);
+        switch (true) {
+            case $count == 0:
+                break;
+            case $count == 1:
+                $this->andWhere([$name => $value[0]]);
+                break;
+            case $count >= 2:
+                $this->andWhere([
+                    'in',
+                    $name,
+                    $value,
+                ]);
+                break;
+        }
 
         return $this;
     }
