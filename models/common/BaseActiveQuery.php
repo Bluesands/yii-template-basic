@@ -53,6 +53,26 @@ class BaseActiveQuery extends ActiveQuery
     }
 
     /**
+     * 将查询结果二维数组转为一维数组
+     * 如果不提供字段，则自动提取查询第一个字段
+     * @param string $columnName 保留字段key
+     * @return array
+     */
+    public function columnAll(string $columnName = null)
+    {
+        if (is_null($columnName)) {
+            $columnName = current($this->select);
+            if (strpos($columnName, '.')) {
+                $columnName = explode('.', $columnName)[1];
+            }
+        }
+
+        $all = $this->all();
+
+        return array_column($all, $columnName);
+    }
+
+    /**
      * @param int $pageSize
      * @return array
      */
